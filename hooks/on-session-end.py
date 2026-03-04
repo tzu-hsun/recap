@@ -14,7 +14,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-import json
 import os
 import sys
 from pathlib import Path
@@ -60,23 +59,9 @@ def main() -> None:
             for f in git_context.get("changed_files", [])[:10]:
                 state_lines.append(f"  - {f}")
 
-    state_summary = "\n".join(state_lines) if state_lines else "No git context available."
-
-    result = {
-        "hookSpecificOutput": {
-            "hookEventName": "Stop",
-            "additionalContext": (
-                "<recap-session-end>\n"
-                "Session is ending. Final git state:\n\n"
-                f"{state_summary}\n\n"
-                "If you haven't saved this session yet, suggest running `/recap save` "
-                "in the next session to capture what was done.\n"
-                "</recap-session-end>"
-            ),
-        }
-    }
-
-    print(json.dumps(result, ensure_ascii=False), flush=True)
+    # Stop hooks don't support hookSpecificOutput.additionalContext.
+    # Just exit cleanly — session-start hook handles reminders.
+    _ = state_lines  # computed for future use if Stop hooks gain context support
 
 
 if __name__ == "__main__":

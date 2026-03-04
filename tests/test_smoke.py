@@ -211,10 +211,19 @@ class TestHookOutput(unittest.TestCase):
             self.assertIn("recap", ctx.lower())
 
     def test_session_end_hook(self):
+        """Stop hook exits cleanly with rc=0 (Stop hooks don't support additionalContext)."""
         with tempfile.TemporaryDirectory() as tmp:
-            data = self._run_hook("on-session-end.py", {"CLAUDE_PROJECT_DIR": tmp})
-            ctx = data["hookSpecificOutput"]["additionalContext"]
-            self.assertIn("recap-session-end", ctx)
+            hook_path = REPO_ROOT / "hooks" / "on-session-end.py"
+            env = os.environ.copy()
+            env["CLAUDE_PROJECT_DIR"] = tmp
+            result = subprocess.run(
+                [sys.executable, str(hook_path)],
+                capture_output=True,
+                text=True,
+                env=env,
+                timeout=30,
+            )
+            self.assertEqual(result.returncode, 0, f"Hook failed: {result.stderr}")
 
 
 class TestCLI(unittest.TestCase):

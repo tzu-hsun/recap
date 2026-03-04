@@ -19,6 +19,25 @@ Claude Code sessions. Sessions are stored as markdown journals in `.claude/recap
 - User asks to "hand off" or prepare for a new session
 - User asks to review past session history
 
+## Path Resolution
+
+Recap scripts live in the repo root, not inside the skill directory. The skill
+is typically symlinked from `~/.claude/skills/recap` → `<repo>/skills/recap/`.
+To find the repo root, resolve the symlink and go up two levels.
+
+**Always run this first** to set `RECAP_ROOT` before any command:
+
+```bash
+RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
+```
+
+For Python inline usage:
+
+```python
+from pathlib import Path
+recap_root = (Path.home() / ".claude" / "skills" / "recap").resolve().parent.parent
+```
+
 ## Commands
 
 ### `/recap save`
@@ -29,7 +48,8 @@ Capture the current session to the journal.
 
 1. Run the git context script to get current state:
    ```bash
-   python3 <plugin-root>/scripts/recap_core.py git-context
+   RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
+   python3 "$RECAP_ROOT/scripts/recap_core.py" git-context
    ```
 
 2. Summarize the current session by reviewing:
@@ -38,11 +58,14 @@ Capture the current session to the journal.
    - Files that were created or modified
    - Any outstanding TODOs or next steps
 
-3. Write the session entry using the script. Create the entry content as a
-   temporary file, then append it:
+3. Write the session entry using the script:
    ```python
-   # In Python, or have Claude construct the entry:
-   import sys; sys.path.insert(0, '<plugin-root>/scripts')
+   import sys
+   from pathlib import Path
+
+   recap_root = (Path.home() / ".claude" / "skills" / "recap").resolve().parent.parent
+   sys.path.insert(0, str(recap_root / "scripts"))
+
    from recap_core import get_recap_dir, get_git_context, format_session_entry, append_session, find_project_root
 
    root = find_project_root()
@@ -70,7 +93,8 @@ Capture the current session to the journal.
 Show recent sessions.
 
 ```bash
-python3 <plugin-root>/scripts/recap_core.py list
+RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
+python3 "$RECAP_ROOT/scripts/recap_core.py" list
 ```
 
 Display results as a table: timestamp, branch, journal file.
@@ -80,7 +104,8 @@ Display results as a table: timestamp, branch, journal file.
 Search past sessions for a keyword.
 
 ```bash
-python3 <plugin-root>/scripts/recap_core.py search "<query>"
+RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
+python3 "$RECAP_ROOT/scripts/recap_core.py" search "<query>"
 ```
 
 Show matching session entries with relevant context.
@@ -91,7 +116,8 @@ Manually restore context from previous sessions (useful if the auto-restore
 hook didn't fire or the user wants to see more history).
 
 ```bash
-python3 <plugin-root>/scripts/recap_core.py restore --count 3
+RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
+python3 "$RECAP_ROOT/scripts/recap_core.py" restore --count 3
 ```
 
 Present the restored context to the user with a brief summary of:
