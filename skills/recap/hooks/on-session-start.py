@@ -49,6 +49,12 @@ def main() -> None:
         sys.exit(0)
 
     project_dir = Path(os.environ.get("CLAUDE_PROJECT_DIR", ".")).resolve()
+
+    # Allow projects to opt out of recap (e.g., the recap dev project itself)
+    if (project_dir / ".claude" / "recap" / ".skip").exists():
+        print(json.dumps({}), flush=True)
+        return
+
     recap_dir = project_dir / ".claude" / "recap"
 
     # If recap hasn't been used yet, output a brief intro

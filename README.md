@@ -217,6 +217,16 @@ Create `.claude/recap/config.json` in your project to customize behavior:
 
 Setting `restore_count` to `1` gives minimal context (just the last session). Setting it to `5` gives more history but uses more of Claude's context window.
 
+### Disabling Recap for a Project
+
+To opt a project out of recap entirely (no journals written, no context restored):
+
+```bash
+mkdir -p .claude/recap && touch .claude/recap/.skip
+```
+
+Remove the `.skip` file to re-enable. Useful for the recap dev project itself or projects where session tracking isn't wanted.
+
 ## Project Structure
 
 ```

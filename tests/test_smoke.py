@@ -227,6 +227,47 @@ class TestHookOutput(unittest.TestCase):
             self.assertEqual(result.returncode, 0, f"Hook failed: {result.stderr}")
 
 
+class TestHookSkip(unittest.TestCase):
+    """Hooks exit cleanly when .skip marker exists."""
+
+    def test_session_start_hook_skipped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            skip_dir = Path(tmp) / ".claude" / "recap"
+            skip_dir.mkdir(parents=True)
+            (skip_dir / ".skip").touch()
+            hook_path = SKILL_DIR / "hooks" / "on-session-start.py"
+            env = os.environ.copy()
+            env["CLAUDE_PROJECT_DIR"] = tmp
+            result = subprocess.run(
+                [sys.executable, str(hook_path)],
+                capture_output=True,
+                text=True,
+                env=env,
+                timeout=30,
+            )
+            self.assertEqual(result.returncode, 0, f"Hook failed: {result.stderr}")
+            data = json.loads(result.stdout)
+            self.assertEqual(data, {})
+
+    def test_session_end_hook_skipped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            skip_dir = Path(tmp) / ".claude" / "recap"
+            skip_dir.mkdir(parents=True)
+            (skip_dir / ".skip").touch()
+            hook_path = SKILL_DIR / "hooks" / "on-session-end.py"
+            env = os.environ.copy()
+            env["CLAUDE_PROJECT_DIR"] = tmp
+            result = subprocess.run(
+                [sys.executable, str(hook_path)],
+                capture_output=True,
+                text=True,
+                env=env,
+                timeout=30,
+            )
+            self.assertEqual(result.returncode, 0, f"Hook failed: {result.stderr}")
+            self.assertEqual(result.stdout.strip(), "")
+
+
 class TestCLI(unittest.TestCase):
     """CLI subcommands work."""
 

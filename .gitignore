@@ -20,5 +20,8 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Recap data (users may choose to commit or ignore)
-# .claude/recap/
+# Recap runtime data
+.claude/recap/
+
+# Plugin metadata (not needed for installation)
+.claude-plugin/

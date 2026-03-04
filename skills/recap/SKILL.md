@@ -25,6 +25,9 @@ Claude Code sessions. Sessions are stored as markdown journals in `.claude/recap
 
 Capture the current session to the journal.
 
+> **Note:** If `.claude/recap/.skip` exists in the project, recap is disabled.
+> Inform the user: "Recap is disabled for this project (`.skip` marker found). Remove `.claude/recap/.skip` to re-enable."
+
 **Workflow:**
 
 1. Run the git context script to get current state:
@@ -147,6 +150,17 @@ Example entry format:
 
 ---
 ```
+
+## Disabling Recap for a Project
+
+To prevent recap from writing journals or restoring context in a specific project:
+
+```bash
+mkdir -p .claude/recap && touch .claude/recap/.skip
+```
+
+This is useful for the recap dev project itself, or any project where you don't want session tracking.
+Remove the `.skip` file to re-enable.
 
 ## Tips
 

@@ -44,6 +44,11 @@ def main() -> None:
         sys.exit(0)
 
     project_dir = Path(os.environ.get("CLAUDE_PROJECT_DIR", ".")).resolve()
+
+    # Allow projects to opt out of recap
+    if (project_dir / ".claude" / "recap" / ".skip").exists():
+        return
+
     git_context = get_git_context(project_dir)
 
     # Build a summary of final state for the stop event
