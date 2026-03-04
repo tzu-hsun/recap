@@ -1,0 +1,14 @@
+target-version = "py39"
+line-length = 100
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+# Hooks need warnings.filterwarnings before other imports and sys.path before local imports
+"hooks/*.py" = ["E402", "I001", "UP009"]
+# Core module has intentional encoding declaration for Windows compat
+"scripts/*.py" = ["UP009"]
+# Tests need sys.path manipulation before local imports
+"tests/*.py" = ["E402", "I001"]

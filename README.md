@@ -1,5 +1,7 @@
 # Recap
 
+[![CI](https://github.com/tzu-hsun/recap/actions/workflows/ci.yml/badge.svg)](https://github.com/tzu-hsun/recap/actions/workflows/ci.yml)
+
 Session memory for Claude Code. Recap captures what you worked on at the end of each session and restores that context when you start a new one — so you never lose track of where you left off.
 
 ## Why Recap Exists
@@ -23,7 +25,7 @@ No external services. No databases. No dependencies beyond Python's standard lib
 ### 1. Clone Recap
 
 ```bash
-git clone https://github.com/calvinchao/recap.git ~/recap
+git clone https://github.com/tzu-hsun/recap.git ~/recap
 ```
 
 ### 2. Install the skill

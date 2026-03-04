@@ -16,5 +16,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Test artifacts
+.coverage
+htmlcov/
+
 # Recap data (users may choose to commit or ignore)
 # .claude/recap/
