@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Recap smoke tests — stdlib unittest, no pytest required."""
 
+from __future__ import annotations
+
 import json
 import os
 import py_compile
