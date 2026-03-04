@@ -7,8 +7,8 @@ ignore = ["E501"]
 
 [lint.per-file-ignores]
 # Hooks need warnings.filterwarnings before other imports and sys.path before local imports
-"hooks/*.py" = ["E402", "I001", "UP009"]
+"skills/recap/hooks/*.py" = ["E402", "I001", "UP009"]
 # Core module has intentional encoding declaration for Windows compat
-"scripts/*.py" = ["UP009"]
+"skills/recap/scripts/*.py" = ["UP009"]
 # Tests need sys.path manipulation before local imports
 "tests/*.py" = ["E402", "I001"]

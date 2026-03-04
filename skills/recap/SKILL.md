@@ -19,25 +19,6 @@ Claude Code sessions. Sessions are stored as markdown journals in `.claude/recap
 - User asks to "hand off" or prepare for a new session
 - User asks to review past session history
 
-## Path Resolution
-
-Recap scripts live in the repo root, not inside the skill directory. The skill
-is typically symlinked from `~/.claude/skills/recap` → `<repo>/skills/recap/`.
-To find the repo root, resolve the symlink and go up two levels.
-
-**Always run this first** to set `RECAP_ROOT` before any command:
-
-```bash
-RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
-```
-
-For Python inline usage:
-
-```python
-from pathlib import Path
-recap_root = (Path.home() / ".claude" / "skills" / "recap").resolve().parent.parent
-```
-
 ## Commands
 
 ### `/recap save`
@@ -48,8 +29,7 @@ Capture the current session to the journal.
 
 1. Run the git context script to get current state:
    ```bash
-   RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
-   python3 "$RECAP_ROOT/scripts/recap_core.py" git-context
+   python3 ~/.claude/skills/recap/scripts/recap_core.py git-context
    ```
 
 2. Summarize the current session by reviewing:
@@ -63,8 +43,7 @@ Capture the current session to the journal.
    import sys
    from pathlib import Path
 
-   recap_root = (Path.home() / ".claude" / "skills" / "recap").resolve().parent.parent
-   sys.path.insert(0, str(recap_root / "scripts"))
+   sys.path.insert(0, str(Path.home() / ".claude" / "skills" / "recap" / "scripts"))
 
    from recap_core import get_recap_dir, get_git_context, format_session_entry, append_session, find_project_root
 
@@ -93,8 +72,7 @@ Capture the current session to the journal.
 Show recent sessions.
 
 ```bash
-RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
-python3 "$RECAP_ROOT/scripts/recap_core.py" list
+python3 ~/.claude/skills/recap/scripts/recap_core.py list
 ```
 
 Display results as a table: timestamp, branch, journal file.
@@ -104,8 +82,7 @@ Display results as a table: timestamp, branch, journal file.
 Search past sessions for a keyword.
 
 ```bash
-RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
-python3 "$RECAP_ROOT/scripts/recap_core.py" search "<query>"
+python3 ~/.claude/skills/recap/scripts/recap_core.py search "<query>"
 ```
 
 Show matching session entries with relevant context.
@@ -116,8 +93,7 @@ Manually restore context from previous sessions (useful if the auto-restore
 hook didn't fire or the user wants to see more history).
 
 ```bash
-RECAP_ROOT=$(python3 -c "from pathlib import Path; print((Path.home() / '.claude' / 'skills' / 'recap').resolve().parent.parent)")
-python3 "$RECAP_ROOT/scripts/recap_core.py" restore --count 3
+python3 ~/.claude/skills/recap/scripts/recap_core.py restore --count 3
 ```
 
 Present the restored context to the user with a brief summary of:

@@ -22,21 +22,19 @@ No external services. No databases. No dependencies beyond Python's standard lib
 
 ## Quickstart
 
-### 1. Clone Recap
+### 1. Install the skill
+
+Copy the self-contained skill directory into your Claude Code skills folder:
 
 ```bash
-git clone https://github.com/tzu-hsun/recap.git ~/recap
+git clone https://github.com/tzu-hsun/recap.git /tmp/recap
+cp -r /tmp/recap/skills/recap ~/.claude/skills/recap
+rm -rf /tmp/recap
 ```
 
-### 2. Install the skill
+This installs everything Recap needs — the skill definition, hooks, and core logic — into `~/.claude/skills/recap/`. No symlinks, no repo dependency at runtime.
 
-```bash
-claude skill install --path ~/recap/skills/recap
-```
-
-This teaches Claude Code the `/recap` commands (save, list, search, restore).
-
-### 3. Add the hooks
+### 2. Add the hooks
 
 Open your Claude Code settings file. Use the **project-level** settings for per-project memory, or **global** settings for all projects:
 
@@ -55,21 +53,30 @@ Add the hooks configuration:
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "*",
-        "command": "python3 ~/recap/hooks/on-session-start.py"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/skills/recap/hooks/on-session-start.py",
+            "timeout": 10,
+            "statusMessage": "Restoring session context..."
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "matcher": "*",
-        "command": "python3 ~/recap/hooks/on-session-end.py"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/skills/recap/hooks/on-session-end.py",
+            "timeout": 10,
+            "statusMessage": "Capturing final state..."
+          }
+        ]
       }
     ]
   }
 }
-```
-
-> Replace `~/recap` with wherever you cloned the repo.
 
 ### 4. Use it
 
@@ -214,21 +221,22 @@ Setting `restore_count` to `1` gives minimal context (just the last session). Se
 
 ```
 recap/
-├── .claude-plugin/
-│   └── plugin.json               # Plugin metadata
 ├── skills/
-│   └── recap/
-│       └── SKILL.md              # Skill definition (teaches Claude the /recap commands)
-├── hooks/
-│   ├── on-session-start.py       # Auto-restore context on session start
-│   └── on-session-end.py         # Capture final state on session end
-├── scripts/
-│   └── recap_core.py             # Core logic (git context, journal management)
+│   └── recap/                        # Self-contained — copy this to ~/.claude/skills/recap/
+│       ├── SKILL.md                  # Skill definition (teaches Claude the /recap commands)
+│       ├── hooks/
+│       │   ├── on-session-start.py   # Auto-restore context on session start
+│       │   └── on-session-end.py     # Capture final state on session end
+│       └── scripts/
+│           └── recap_core.py         # Core logic (git context, journal management)
+├── tests/
+│   └── test_smoke.py                 # Test suite (unittest, no pytest)
 ├── examples/
-│   └── sample-journal.md         # Example of what journal entries look like
+│   └── sample-journal.md             # Example of what journal entries look like
 ├── README.md
+├── CONTRIBUTING.md
 ├── CHANGELOG.md
-├── LICENSE                       # MIT
+├── LICENSE                           # MIT
 └── .gitignore
 ```
 

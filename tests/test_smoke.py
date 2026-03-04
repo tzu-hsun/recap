@@ -14,7 +14,8 @@ from pathlib import Path
 
 # Add scripts/ to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(REPO_ROOT / "scripts"))
+SKILL_DIR = REPO_ROOT / "skills" / "recap"
+sys.path.insert(0, str(SKILL_DIR / "scripts"))
 
 import recap_core
 
@@ -188,7 +189,7 @@ class TestHookOutput(unittest.TestCase):
     """Both hooks produce valid JSON with hookSpecificOutput."""
 
     def _run_hook(self, hook_name: str, env_extra: dict | None = None) -> dict:
-        hook_path = REPO_ROOT / "hooks" / hook_name
+        hook_path = SKILL_DIR / "hooks" / hook_name
         env = os.environ.copy()
         env.update(env_extra or {})
         result = subprocess.run(
@@ -213,7 +214,7 @@ class TestHookOutput(unittest.TestCase):
     def test_session_end_hook(self):
         """Stop hook exits cleanly with rc=0 (Stop hooks don't support additionalContext)."""
         with tempfile.TemporaryDirectory() as tmp:
-            hook_path = REPO_ROOT / "hooks" / "on-session-end.py"
+            hook_path = SKILL_DIR / "hooks" / "on-session-end.py"
             env = os.environ.copy()
             env["CLAUDE_PROJECT_DIR"] = tmp
             result = subprocess.run(
@@ -231,7 +232,7 @@ class TestCLI(unittest.TestCase):
 
     def test_git_context_subcommand(self):
         result = subprocess.run(
-            [sys.executable, str(REPO_ROOT / "scripts" / "recap_core.py"), "git-context"],
+            [sys.executable, str(SKILL_DIR / "scripts" / "recap_core.py"), "git-context"],
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
@@ -243,7 +244,7 @@ class TestCLI(unittest.TestCase):
 
     def test_help(self):
         result = subprocess.run(
-            [sys.executable, str(REPO_ROOT / "scripts" / "recap_core.py"), "--help"],
+            [sys.executable, str(SKILL_DIR / "scripts" / "recap_core.py"), "--help"],
             capture_output=True,
             text=True,
             timeout=10,

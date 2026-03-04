@@ -12,6 +12,8 @@ pip install ruff  # for linting
 
 No other dependencies — Recap uses Python stdlib only.
 
+All source code lives in `skills/recap/` (scripts, hooks, and the skill definition). This directory is the self-contained installable package that users copy to `~/.claude/skills/recap/`.
+
 ## Testing
 
 ```bash
